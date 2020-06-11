@@ -5,11 +5,15 @@
  * Second part is used for encoding/decoding from expanded key.
  * Encoding consists of #ROUNDS rounds, more rounds: stronger cipher text.
  * I use 10 rounds.
+ * This is 128-bit version of AES, that means that block of cipher text consists of 16 symbols. (key too)
  * (Read more at: https://en.wikipedia.org/wiki/Advanced_Encryption_Standard)
  *
  * Author: Mukhin Dmitry.
  * Moscow, Russia 2020.
  */
+
+#include <string>
+#include <iostream>
 
 #define SIZE 256
 #define WORD_SIZE 4
@@ -253,12 +257,14 @@ void addRoundKey(int state[WORD_SIZE][WORD_SIZE], int keys[][WORD_SIZE], int rou
     }
 }
 
-//Encode: text is input text, key is input key, keys_size is key size, cipherText is encoded cipher text (Everything should be in HEX!)
-void encode(int *text, int *key, int keys_size, int cipherText[TEXT_SIZE]) {
+using namespace std;
 
-    int keys[keys_size * (ROUNDS + 1)][WORD_SIZE];
+//Encode: text is input text, key is input key, cipherText is encoded cipher text (Everything should be in HEX!)
+void encode(int *text, int *key, int cipherText[TEXT_SIZE]) {
 
-    keyExpansion(key, keys_size, keys);
+    int keys[WORD_SIZE * (ROUNDS + 1)][WORD_SIZE];
+
+    keyExpansion(key, WORD_SIZE, keys);
 
     int state[WORD_SIZE][WORD_SIZE];
 
@@ -352,13 +358,13 @@ void invAddRoundKey(int state[WORD_SIZE][WORD_SIZE], int keys[][WORD_SIZE], int 
     }
 }
 
-//Decode: text is input text, key is input key, keys_size is key size, cipherText is encoded cipher text (Everything should be in HEX!)
-void decode(int *cipherText, int *key, int keys_size, int text[TEXT_SIZE]) {
+//Decode: text is input text, key is input key, cipherText is encoded cipher text (Everything should be in HEX!)
+void decode(int *cipherText, int *key, int text[TEXT_SIZE]) {
 
-    int keys[keys_size * (ROUNDS + 1)][WORD_SIZE];
+    int keys[WORD_SIZE * (ROUNDS + 1)][WORD_SIZE];
 
     //To decode we use same key expansion
-    keyExpansion(key, keys_size, keys);
+    keyExpansion(key, WORD_SIZE, keys);
 
     int state[WORD_SIZE][WORD_SIZE];
 
@@ -387,8 +393,62 @@ void decode(int *cipherText, int *key, int keys_size, int text[TEXT_SIZE]) {
     }
 }
 
+using namespace std;
+
 int main() {
 
+    //Example
+
+    string text = "Hello, world!!!!";
+
+    //Text as hex
+    int hexText[TEXT_SIZE] = {
+            0x48, 0x65, 0x6c, 0x6c,
+            0x6f, 0x2c, 0x20, 0x77,
+            0x6f, 0x72, 0x6c, 0x64,
+            0x21, 0x21, 0x21, 0x21,
+    };
+
+    cout << "Input text: " << endl;
+    for(int i = 0; i < TEXT_SIZE; ++i)
+        cout << hex << hexText[i] << " ";
+    cout << endl;
+
+    string key = "Two One Nine Two";
+
+    //Key as Hex
+    int hexKey[TEXT_SIZE] = {
+            0x54, 0x77, 0x6F, 0x20,
+            0x4F, 0x6E, 0x65, 0x20,
+            0x4E, 0x69, 0x6E, 0x65,
+            0x20, 0x54, 0x77, 0x6F
+    };
+
+    cout << "Key: " << endl;
+    for(int i = 0; i < TEXT_SIZE; ++i){
+        cout << hexKey[i] << " ";
+    }
+    cout << endl;
+
+    int cipherText[TEXT_SIZE];
+
+    encode(hexText, hexKey, cipherText);
+
+    cout << "Encoded text: " << endl;
+    for(int i = 0; i < TEXT_SIZE; ++i){
+        cout << hex << cipherText[i] << " ";
+    }
+    cout << endl;
+
+    int realText[TEXT_SIZE];
+
+    decode(cipherText, hexKey, realText);
+
+    cout << "Decoded text: " << endl;
+    for(int i = 0; i < TEXT_SIZE; ++i){
+        cout << hex << realText[i] << " ";
+    }
+    cout << endl;
 
     return 0;
 }
