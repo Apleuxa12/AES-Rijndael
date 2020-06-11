@@ -221,6 +221,15 @@ void subByteState(int state[WORD_SIZE][WORD_SIZE]) {
     }
 }
 
+//Adding round key to state - xor part of keys and current state (state is input text, keys is expanded key, round is current round)
+void addRoundKey(int state[WORD_SIZE][WORD_SIZE], int keys[][WORD_SIZE], int round) {
+    for (int i = 0; i < WORD_SIZE; ++i) {
+        for (int j = 0; j < WORD_SIZE; ++j) {
+            state[i][j] = state[i][j] ^ keys[j + round * WORD_SIZE][i];
+        }
+    }
+}
+
 int main() {
 
 
