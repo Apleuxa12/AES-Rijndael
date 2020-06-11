@@ -60,6 +60,13 @@ int mix[WORD_SIZE][WORD_SIZE] = {
         {0x03, 0x01, 0x01, 0x02}
 };
 
+int invmix[WORD_SIZE][WORD_SIZE] = {
+        {0x0e, 0x0b, 0x0d, 0x09},
+        {0x09, 0x0e, 0x0b, 0x0d},
+        {0x0d, 0x09, 0x0e, 0x0b},
+        {0x0b, 0x0d, 0x09, 0x0e}
+};
+
 //FUNCTIONS FOR KEY EXPANSION
 
 //RotWord procedure: shift bytes of word on 1 at right
@@ -274,6 +281,28 @@ void invShiftRows(int state[][WORD_SIZE]) {
     for (int i = 0; i < WORD_SIZE; ++i) {
         for (int j = 0; j < WORD_SIZE; ++j) {
             newState[i][(i + j) % WORD_SIZE] = state[i][j];
+        }
+    }
+
+    for (int i = 0; i < WORD_SIZE; ++i) {
+        for (int j = 0; j < WORD_SIZE; ++j) {
+            state[i][j] = newState[i][j];
+        }
+    }
+}
+
+//InvMixColumns procedure: matrix multiplication of input array and invMix array (inversion to mixColumns procedure)
+void invMixColumns(int state[][WORD_SIZE]) {
+
+    int newState[WORD_SIZE][WORD_SIZE];
+
+    for (int i = 0; i < WORD_SIZE; ++i) {
+        for (int j = 0; j < WORD_SIZE; ++j) {
+            int s = 0;
+            for (int k = 0; k < WORD_SIZE; ++k) {
+                s ^= gfmult(invmix[i][k], state[k][j]);
+            }
+            newState[i][j] = s;
         }
     }
 
