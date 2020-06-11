@@ -163,6 +163,21 @@ void shiftRows(int state[][WORD_SIZE]) {
     }
 }
 
+//Multiplication in Galois Field
+// (see more at https://en.wikipedia.org/wiki/Finite_field_arithmetic, 'Rijndael's (AES) finite field' part).
+int gfmult(int a, int b) {
+    int res = 0;
+    for (; b; b >>= 1) {
+        if (b & 1)
+            res ^= a;
+        if (a & 0x80)
+            a = (a << 1) ^ 0x11b;
+        else
+            a <<= 1;
+    }
+    return res;
+}
+
 int main() {
 
 
