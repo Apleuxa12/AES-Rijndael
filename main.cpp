@@ -53,6 +53,13 @@ int rcon[ROUNDS + 1][WORD_SIZE] = {
         {0x36, 0x00, 0x00, 0x00}
 };
 
+int mix[WORD_SIZE][WORD_SIZE] = {
+        {0x02, 0x03, 0x01, 0x01},
+        {0x01, 0x02, 0x03, 0x01},
+        {0x01, 0x01, 0x02, 0x03},
+        {0x03, 0x01, 0x01, 0x02}
+};
+
 //FUNCTIONS FOR KEY EXPANSION
 
 //RotWord procedure: shift bytes of word on 1 at right
@@ -163,7 +170,7 @@ void shiftRows(int state[][WORD_SIZE]) {
     }
 }
 
-//Multiplication in Galois Field
+//Multiplication in Galois Field (2^n)
 // (see more at https://en.wikipedia.org/wiki/Finite_field_arithmetic, 'Rijndael's (AES) finite field' part).
 int gfmult(int a, int b) {
     int res = 0;
@@ -176,6 +183,28 @@ int gfmult(int a, int b) {
             a <<= 1;
     }
     return res;
+}
+
+//Matrix multiplication of input array and mix array (don't remember we are in Galois Field (2^n))
+void mixColumns(int state[][WORD_SIZE]) {
+
+    int newState[WORD_SIZE][WORD_SIZE];
+
+    for (int i = 0; i < WORD_SIZE; ++i) {
+        for (int j = 0; j < WORD_SIZE; ++j) {
+            int s = 0;
+            for (int k = 0; k < WORD_SIZE; ++k) {
+                s ^= gfmult(mix[i][k], state[k][j]);
+            }
+            newState[i][j] = s;
+        }
+    }
+
+    for (int i = 0; i < WORD_SIZE; ++i) {
+        for (int j = 0; j < WORD_SIZE; ++j) {
+            state[i][j] = newState[i][j];
+        }
+    }
 }
 
 int main() {
