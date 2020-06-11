@@ -109,6 +109,39 @@ int *keySum(int *key1, int *key2) {
     return res;
 }
 
+//KeyExpansion function (key is input key, keys_size is its size, gkeys - expanded key)
+void keyExpansion(int *key, int keys_size, int gkeys[][WORD_SIZE]) {
+
+    int keys[keys_size][WORD_SIZE];
+
+    splitKey(key, WORD_SIZE * keys_size, keys);
+
+    //zero round
+    for (int i = 0; i < keys_size; ++i) {
+        for (int j = 0; j < WORD_SIZE; ++j) {
+            gkeys[i][j] = keys[i][j];
+        }
+    }
+
+    int round = 1;
+
+    for (int i = keys_size; i < keys_size * (ROUNDS + 1); i += keys_size) {
+        int *ws[keys_size];
+
+        ws[0] = keySum(g(gkeys[i - 1], round++), gkeys[i - keys_size]);
+
+        for (int k = 1; k < keys_size; ++k) {
+            ws[k] = keySum(ws[k - 1], gkeys[i - (keys_size - k)]);
+        }
+
+        for (int j = 0; j < WORD_SIZE; ++j) {
+            for (int k = 0; k < keys_size; ++k) {
+                gkeys[i + k][j] = ws[k][j];
+            }
+        }
+    }
+}
+
 int main() {
 
 
