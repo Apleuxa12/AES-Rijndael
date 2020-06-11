@@ -8,6 +8,9 @@
  * This is 128-bit version of AES, that means that block of cipher text consists of 16 symbols. (key too)
  * (Read more at: https://en.wikipedia.org/wiki/Advanced_Encryption_Standard)
  *
+ * This is educational project, to show how works Rijndael, it can consist memory leaks or other mistakes and shouldn't be used in this form
+ * in real project.
+ *
  * Author: Mukhin Dmitry.
  * Moscow, Russia 2020.
  */
