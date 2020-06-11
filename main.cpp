@@ -1,7 +1,7 @@
 /*
  * This project is created to show the point of Rijndael algo.
  * It's quite easy, main functions are encode and decode. (their names speak for themselves)
- * First part is used for 'key expansion', this is creation of special Rijndael key from input key.
+ * First part is used for 'key expansion', this is creation of special Rijndael key from input key. (it is #ROUNDS times larger)
  * Second part is used for encoding/decoding from expansed key.
  * Encoding consists of #ROUNDS rounds, more rounds: stronger cipher text.
  * I use 10 rounds.
@@ -145,7 +145,23 @@ void keyExpansion(int *key, int keys_size, int gkeys[][WORD_SIZE]) {
 
 // FUNCTIONS FOR RIJNDAEL ENCODING/DECODING
 
+//Shift rows of input array, first row on 1 pos, second on 2 pos, ... , n on n pos.
+void shiftRows(int state[][WORD_SIZE]) {
 
+    int newState[WORD_SIZE][WORD_SIZE];
+
+    for (int i = 0; i < WORD_SIZE; ++i) {
+        for (int j = 0; j < WORD_SIZE; ++j) {
+            newState[i][j] = state[i][(i + j) % WORD_SIZE];
+        }
+    }
+
+    for (int i = 0; i < WORD_SIZE; ++i) {
+        for (int j = 0; j < WORD_SIZE; ++j) {
+            state[i][j] = newState[i][j];
+        }
+    }
+}
 
 int main() {
 
