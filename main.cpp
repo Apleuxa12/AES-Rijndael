@@ -125,6 +125,7 @@ void keyExpansion(int *key, int keys_size, int gkeys[][WORD_SIZE]) {
 
     int round = 1;
 
+    //main key expansion algo
     for (int i = keys_size; i < keys_size * (ROUNDS + 1); i += keys_size) {
         int *ws[keys_size];
 
@@ -141,6 +142,10 @@ void keyExpansion(int *key, int keys_size, int gkeys[][WORD_SIZE]) {
         }
     }
 }
+
+// FUNCTIONS FOR RIJNDAEL ENCODING/DECODING
+
+
 
 int main() {
 
