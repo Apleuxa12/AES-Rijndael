@@ -86,6 +86,19 @@ int *g(int *word, int round) {
     return sumRcon(subWord(rotWord(word)), round);
 }
 
+//Split one-dimensional array into 2-dimensional array, because key expansion works with 2-dimensional array
+void splitKey(int *key, int N, int result[][WORD_SIZE]) {
+
+    int counter = 0;
+
+    for (int i = 0; i < N; ++i) {
+        result[counter][i % WORD_SIZE] = key[i];
+
+        if ((i + 1) % WORD_SIZE == 0)
+            ++counter;
+    }
+}
+
 int main() {
 
 
