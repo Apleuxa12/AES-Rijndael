@@ -150,7 +150,7 @@ void keyExpansion(int *key, int keys_size, int gkeys[][WORD_SIZE]) {
     }
 }
 
-// FUNCTIONS FOR RIJNDAEL ENCODING/DECODING
+// FUNCTIONS FOR RIJNDAEL ENCODING
 
 //Shift rows of input array, first row on 1 pos, second on 2 pos, ... , n on n pos.
 void shiftRows(int state[][WORD_SIZE]) {
@@ -210,6 +210,15 @@ void mixColumns(int state[][WORD_SIZE]) {
 //Change byte to appropriate from sbox array
 int subByte(int x) {
     return sbox[x];
+}
+
+//SubByteState procedure: use subByte to every byte of input array
+void subByteState(int state[WORD_SIZE][WORD_SIZE]) {
+    for (int i = 0; i < WORD_SIZE; ++i) {
+        for (int j = 0; j < WORD_SIZE; ++j) {
+            state[i][j] = subByte(state[i][j]);
+        }
+    }
 }
 
 int main() {
