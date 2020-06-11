@@ -346,6 +346,15 @@ void invSubByteState(int state[WORD_SIZE][WORD_SIZE]) {
     }
 }
 
+//Inversive adding of round key, xor part of keys from the end and current state (state is input text, keys is expanded key, round is current round)
+void invAddRoundKey(int state[WORD_SIZE][WORD_SIZE], int keys[][WORD_SIZE], int round) {
+    for (int i = 0; i < WORD_SIZE; ++i) {
+        for (int j = 0; j < WORD_SIZE; ++j) {
+            state[i][j] = state[i][j] ^ keys[j + (ROUNDS - round) * WORD_SIZE][i];
+        }
+    }
+}
+
 int main() {
 
 
