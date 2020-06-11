@@ -185,7 +185,7 @@ int gfmult(int a, int b) {
     return res;
 }
 
-//Matrix multiplication of input array and mix array (don't remember we are in Galois Field (2^n))
+//MixColumns procedure: matrix multiplication of input array and mix array (don't remember we are in Galois Field (2^n))
 void mixColumns(int state[][WORD_SIZE]) {
 
     int newState[WORD_SIZE][WORD_SIZE];
@@ -205,6 +205,11 @@ void mixColumns(int state[][WORD_SIZE]) {
             state[i][j] = newState[i][j];
         }
     }
+}
+
+//Change byte to appropriate from sbox array
+int subByte(int x) {
+    return sbox[x];
 }
 
 int main() {
