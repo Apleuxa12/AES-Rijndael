@@ -10,8 +10,25 @@
  * Moscow, Russia 2020.
  */
 
-int main() {
+#include <vector>
 
+#define SIZE 256
+#define WORD_SIZE 4
+#define ROUNDS 10
+#define TEXT_SIZE 16
+
+using namespace std;
+
+//FUNCTIONS FOR KEY EXPANSION
+
+int *rotWord(int *word) {
+    int *newWord = new int[WORD_SIZE];
+    for (int i = 0; i < WORD_SIZE; ++i)
+        newWord[i] = word[(i + 1) % WORD_SIZE];
+    return newWord;
+}
+
+int main() {
 
 
     return 0;
