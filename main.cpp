@@ -1,8 +1,8 @@
 /*
- * This project is created to show the point of Rijndael algo.
+ * This project is created to show the main point of Rijndael algo.(Advanced Encryption Standard for now)
  * It's quite easy, main functions are encode and decode. (their names speak for themselves)
  * First part is used for 'key expansion', this is creation of special Rijndael key from input key. (it is #ROUNDS times larger)
- * Second part is used for encoding/decoding from expansed key.
+ * Second part is used for encoding/decoding from expanded key.
  * Encoding consists of #ROUNDS rounds, more rounds: stronger cipher text.
  * I use 10 rounds.
  * (Read more at: https://en.wikipedia.org/wiki/Advanced_Encryption_Standard)
@@ -152,7 +152,7 @@ void keyExpansion(int *key, int keys_size, int gkeys[][WORD_SIZE]) {
 
 // FUNCTIONS FOR RIJNDAEL ENCODING
 
-//Shift rows of input array, first row on 1 pos, second on 2 pos, ... , n on n pos.
+//Shift rows of input array on right, first row on 1 pos, second on 2 pos, ... , n on n pos.
 void shiftRows(int state[][WORD_SIZE]) {
 
     int newState[WORD_SIZE][WORD_SIZE];
@@ -230,7 +230,7 @@ void addRoundKey(int state[WORD_SIZE][WORD_SIZE], int keys[][WORD_SIZE], int rou
     }
 }
 
-//Encode: text is input text, key is input key, keys_size is its size, cipherText is encoded cipher text (Everything should be in HEX!)
+//Encode: text is input text, key is input key, keys_size is key size, cipherText is encoded cipher text (Everything should be in HEX!)
 void encode(int *text, int *key, int keys_size, int cipherText[TEXT_SIZE]) {
 
     int keys[keys_size * (ROUNDS + 1)][WORD_SIZE];
@@ -260,6 +260,26 @@ void encode(int *text, int *key, int keys_size, int cipherText[TEXT_SIZE]) {
     for (int i = 0; i < WORD_SIZE; ++i) {
         for (int j = 0; j < WORD_SIZE; ++j) {
             cipherText[i + j * WORD_SIZE] = state[i][j];
+        }
+    }
+}
+
+// FUNCTIONS FOR RIJNDAEL DECODING
+
+//Shift rows of input array on left, first row on 1 pos, second on 2 pos, ... , n on n pos. (inversion to shiftRows procedure)
+void invShiftRows(int state[][WORD_SIZE]) {
+
+    int newState[WORD_SIZE][WORD_SIZE];
+
+    for (int i = 0; i < WORD_SIZE; ++i) {
+        for (int j = 0; j < WORD_SIZE; ++j) {
+            newState[i][(i + j) % WORD_SIZE] = state[i][j];
+        }
+    }
+
+    for (int i = 0; i < WORD_SIZE; ++i) {
+        for (int j = 0; j < WORD_SIZE; ++j) {
+            state[i][j] = newState[i][j];
         }
     }
 }
