@@ -99,6 +99,16 @@ void splitKey(int *key, int N, int result[][WORD_SIZE]) {
     }
 }
 
+//Xor of 2 arrays
+int *keySum(int *key1, int *key2) {
+    int *res = new int[WORD_SIZE];
+
+    for (int i = 0; i < WORD_SIZE; ++i)
+        res[i] = key1[i] ^ key2[i];
+
+    return res;
+}
+
 int main() {
 
 
