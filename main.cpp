@@ -81,7 +81,10 @@ int *sumRcon(int *word, int round) {
     return newWord;
 }
 
-
+//Final g function for key expansion, composition of all listed below functions
+int *g(int *word, int round) {
+    return sumRcon(subWord(rotWord(word)), round);
+}
 
 int main() {
 
