@@ -355,6 +355,41 @@ void invAddRoundKey(int state[WORD_SIZE][WORD_SIZE], int keys[][WORD_SIZE], int 
     }
 }
 
+//Decode: text is input text, key is input key, keys_size is key size, cipherText is encoded cipher text (Everything should be in HEX!)
+void decode(int *cipherText, int *key, int keys_size, int text[TEXT_SIZE]) {
+
+    int keys[keys_size * (ROUNDS + 1)][WORD_SIZE];
+
+    //To decode we use same key expansion
+    keyExpansion(key, keys_size, keys);
+
+    int state[WORD_SIZE][WORD_SIZE];
+
+    int round = 0;
+
+    //zero round
+    for (int i = 0; i < TEXT_SIZE; ++i)
+        state[i % WORD_SIZE][i / WORD_SIZE] = cipherText[i];
+
+    invAddRoundKey(state, keys, round);
+
+    for (round = 1; round < ROUNDS + 1; ++round) {
+
+        invShiftRows(state);
+        invSubByteState(state);
+        invAddRoundKey(state, keys, round);
+
+        if (round != ROUNDS)
+            invMixColumns(state);
+    }
+
+    for (int i = 0; i < WORD_SIZE; ++i) {
+        for (int j = 0; j < WORD_SIZE; ++j) {
+            text[i + j * WORD_SIZE] = state[i][j];
+        }
+    }
+}
+
 int main() {
 
 
