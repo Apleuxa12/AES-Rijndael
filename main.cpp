@@ -5,6 +5,7 @@
  * Second part is used for encoding/decoding from expansed key.
  * Encoding consists of #ROUNDS rounds, more rounds: stronger cipher text.
  * I use 10 rounds.
+ * (Read more at: https://en.wikipedia.org/wiki/Advanced_Encryption_Standard)
  *
  * Author: Mukhin Dmitry.
  * Moscow, Russia 2020.
@@ -38,6 +39,20 @@ int sbox[SIZE] = {
         0x8c, 0xa1, 0x89, 0x0d, 0xbf, 0xe6, 0x42, 0x68, 0x41, 0x99, 0x2d, 0x0f, 0xb0, 0x54, 0xbb, 0x16
 };
 
+int rcon[ROUNDS + 1][WORD_SIZE] = {
+        {0x00, 0x00, 0x00, 0x00},
+        {0x01, 0x00, 0x00, 0x00},
+        {0x02, 0x00, 0x00, 0x00},
+        {0x04, 0x00, 0x00, 0x00},
+        {0x08, 0x00, 0x00, 0x00},
+        {0x10, 0x00, 0x00, 0x00},
+        {0x20, 0x00, 0x00, 0x00},
+        {0x40, 0x00, 0x00, 0x00},
+        {0x80, 0x00, 0x00, 0x00},
+        {0x1b, 0x00, 0x00, 0x00},
+        {0x36, 0x00, 0x00, 0x00}
+};
+
 //FUNCTIONS FOR KEY EXPANSION
 
 //RotWord procedure: shift bytes of word on 1 at right
@@ -56,6 +71,17 @@ int *subWord(int *word) {
     }
     return newWord;
 }
+
+//Rcon procedure: xor every byte with appropriate in rcon array, depending on round.
+int *sumRcon(int *word, int round) {
+    int *newWord = new int[WORD_SIZE];
+    for (int i = 0; i < WORD_SIZE; ++i) {
+        newWord[i] = word[i] ^ rcon[round][i];
+    }
+    return newWord;
+}
+
+
 
 int main() {
 
