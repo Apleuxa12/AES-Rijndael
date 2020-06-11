@@ -230,6 +230,40 @@ void addRoundKey(int state[WORD_SIZE][WORD_SIZE], int keys[][WORD_SIZE], int rou
     }
 }
 
+//Encode: text is input text, key is input key, keys_size is its size, cipherText is encoded cipher text (Everything should be in HEX!)
+void encode(int *text, int *key, int keys_size, int cipherText[TEXT_SIZE]) {
+
+    int keys[keys_size * (ROUNDS + 1)][WORD_SIZE];
+
+    keyExpansion(key, keys_size, keys);
+
+    int state[WORD_SIZE][WORD_SIZE];
+
+    int round = 0;
+
+    //zero round
+    for (int i = 0; i < TEXT_SIZE; ++i)
+        state[i % WORD_SIZE][i / WORD_SIZE] = text[i];
+
+    addRoundKey(state, keys, round);
+
+    for (round = 1; round < ROUNDS + 1; ++round) {
+
+        subByteState(state);
+        shiftRows(state);
+        if (round != ROUNDS)
+            mixColumns(state);
+
+        addRoundKey(state, keys, round);
+    }
+
+    for (int i = 0; i < WORD_SIZE; ++i) {
+        for (int j = 0; j < WORD_SIZE; ++j) {
+            cipherText[i + j * WORD_SIZE] = state[i][j];
+        }
+    }
+}
+
 int main() {
 
 
