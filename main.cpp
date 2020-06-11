@@ -358,7 +358,7 @@ void invAddRoundKey(int state[WORD_SIZE][WORD_SIZE], int keys[][WORD_SIZE], int 
     }
 }
 
-//Decode: text is input text, key is input key, cipherText is encoded cipher text (Everything should be in HEX!)
+//Decode: text is input text, key is input key, cipherText is decoded cipher text (Everything should be in HEX!)
 void decode(int *cipherText, int *key, int text[TEXT_SIZE]) {
 
     int keys[WORD_SIZE * (ROUNDS + 1)][WORD_SIZE];
